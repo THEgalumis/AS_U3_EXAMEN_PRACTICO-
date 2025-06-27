@@ -86,7 +86,8 @@ Se aplicó un enfoque mixto basado en riesgos y cumplimiento, utilizando:
 
 1. **Puertos expuestos sin restricciones**  
    - Vagrantfile: `config.vm.network "forwarded_port", guest: 80, host: 8080`  
-   - Evidencia: Anexo C (`4.png`)  
+   - Evidencia:  
+   ![Anexo A](1.png)  
 
 2. **Configuraciones de red sin autenticación**  
    - Red pública habilitada por defecto en la VM  
@@ -178,7 +179,7 @@ La auditoría reveló deficiencias significativas en la seguridad y gestión de 
 
 - **Anexo C:** Puertos expuestos y configuración de red  
  
-  ![Anexo C2](4.png)
+  ![Anexo C](4.png)
 
 - **Anexo D:** Credenciales en texto plano (`attributes/default.rb`)  
   ![Anexo D](5.png)

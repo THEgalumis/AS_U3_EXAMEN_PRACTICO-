@@ -52,79 +52,142 @@ Evaluar los riesgos de seguridad asociados al despliegue continuo de la infraest
 
 ## 4. ALCANCE DE LA AUDITORÍA
 
-- Ámbitos evaluados (tecnológico, organizacional, normativo, etc.)
-- Sistemas y procesos incluidos
-- Unidades o áreas auditadas
-- Periodo auditado
+- **Ámbitos evaluados:** Tecnológico y normativo.  
+- **Sistemas y procesos incluidos:**  
+  - Vagrantfile  
+  - Recetas Chef (cookbooks, attributes, metadata)  
+  - Redirecciones de puertos y configuraciones de red  
+- **Unidades auditadas:** Equipo de Desarrollo y Operaciones (DevOps) de DevIA360.  
+- **Periodo auditado:** 20/06/2025 al 27/06/2025.
+
 
 
 
 ## 5. NORMATIVA Y CRITERIOS DE EVALUACIÓN
 
-Lista de normas, marcos de referencia o políticas aplicadas como base para la auditoría. Ejemplos:
-
-- COBIT 2019  
-- ISO/IEC 27001:2022  
-- Ley de Protección de Datos Personales [local]  
-- Políticas internas de TI de la entidad
+- **COBIT 2019**  
+- **ISO/IEC 27001:2022**  
+- **ISO/IEC 27002:2022**  
+- **Buenas prácticas de DevOps y Gestión de Configuración**  
+- **Políticas internas de seguridad de DevIA360**
 
 
 ## 6. METODOLOGÍA Y ENFOQUE
+Se aplicó un enfoque mixto basado en riesgos y cumplimiento, utilizando:  
+- Revisión de la documentación y el repositorio (`git clone https://github.com/OscarJimenezFlores/Chef_Vagrant_Wp.git`)  
+- Ejecución de `vagrant up` y estado (`vagrant status`)  
+- Inspección manual del `Vagrantfile` y recetas Chef (`attributes/default.rb`, `metadata.rb`)  
+- Pruebas técnicas:  
+  - Comprobación de puertos y accesos  
+  - Verificación de logs en `/var/log/`  
+  - Análisis de segregación de ambientes  
 
-Descripción del enfoque utilizado (basado en riesgos, cumplimiento, mixto) y métodos aplicados:
+### 7.1 Revisión de Configuraciones
 
-- Entrevistas con usuarios y responsables de TI  
-- Inspección de documentos y registros  
-- Pruebas técnicas (análisis de logs, escaneo de vulnerabilidades)  
-- Revisión de configuraciones  
-- Aplicación de listas de verificación
+1. **Puertos expuestos sin restricciones**  
+   - Vagrantfile: `config.vm.network "forwarded_port", guest: 80, host: 8080`  
+   - Evidencia: Anexo C (`3.png`)  
 
+2. **Configuraciones de red sin autenticación**  
+   - Red pública habilitada por defecto en la VM  
+   - Evidencia: Anexo C (`4.png`)
 
-## 7. HALLAZGOS Y OBSERVACIONES
+### 7.2 Recetas Chef
 
-Presentación detallada de los hallazgos, estructurados por áreas evaluadas. Cada hallazgo debe incluir:
+1. **Credenciales en texto plano**  
+   - `attributes/default.rb`: usuario y contraseña de base de datos sin cifrar  
+   - Evidencia: Anexo D (`5.png`)
 
-- Descripción del hallazgo  
-- Evidencia objetiva  
-- Grado de criticidad (alto, medio, bajo)  
-- Criterio vulnerado  
-- Causa y efecto
+2. **Versiones no actualizadas**  
+   - `metadata.rb` especifica WordPress v5.7 (actual disponible v6.x)  
+   - Evidencia: Anexo E (`6.png`)
 
+### 7.3 Pruebas de Seguridad
+
+1. **Falta de registros de auditoría**  
+   - No existen logs centralizados ni rotación de logs configurada  
+   - Evidencia: Anexo F (`7.png`)
+
+2. **Ausencia de segregación de ambientes**  
+   - Misma receta y Vagrantfile para dev, test y prod  
+   - Evidencia: Anexo G (`8.png`)
+
+---
 
 ## 8. ANÁLISIS DE RIESGOS
 
-Evaluación del impacto y probabilidad de los riesgos identificados, asociados a los hallazgos encontrados.
+| Hallazgo                        | Riesgo asociado                   | Impacto | Probabilidad (%) | Nivel de Riesgo |
+|---------------------------------|-----------------------------------|---------|------------------|-----------------|
+| Credenciales sin cifrado        | Exposición de credenciales (D)    | Alto    | 90               | Crítico         |
+| Puertos sin restricciones       | Acceso no autorizado (C)          | Medio   | 80               | Alto            |
+| Versiones desactualizadas       | Vulnerabilidades conocidas (E)    | Medio   | 70               | Alto            |
+| Falta de registros de auditoría | Incapacidad de rastrear incidentes (F) | Bajo    | 60               | Medio           |
+| Sin segregación de ambientes    | Cambios no controlados (G)        | Alto    | 75               | Alto            |
 
-| Hallazgo | Riesgo asociado | Impacto | Probabilidad | Nivel de Riesgo |
-|----------|-----------------|---------|--------------|-----------------|
-| [N°]     | [Descripción]   | Alto/Medio/Bajo | Alta/Media/Baja | Alto/Medio/Bajo |
-
+---
 
 ## 9. RECOMENDACIONES
-¿Qué debe hacerse al respecto para mejorar, corregir o mitigar los riesgos?. Propuestas técnicas y organizativas para mitigar los riesgos y subsanar los hallazgos. Cada recomendación debe estar vinculada al hallazgo correspondiente.
 
+1. **Cifrado de credenciales**  
+   - Utilizar `encrypted_data_bag` o Vault para almacenar credenciales.  
+   - Asociar a Hallazgo D.
+
+2. **Restricción de puertos**  
+   - Limitar el forwarding solo a IPs autorizadas o usar VPN.  
+   - Asociar a Hallazgo C.
+
+3. **Actualización de versiones**  
+   - Actualizar WordPress a la última LTS y mantener cookbooks al día.  
+   - Asociar a Hallazgo E.
+
+4. **Implementar logging centralizado**  
+   - Configurar rsyslog/ELK para almacenar y rotar logs.  
+   - Asociar a Hallazgo F.
+
+5. **Segregación de ambientes**  
+   - Crear Vagrantfiles y cookbooks diferenciados para dev, test y prod.  
+   - Asociar a Hallazgo G.
+
+---
 
 ## 10. CONCLUSIONES
-¿Qué se ha encontrado? ¿Cuál es el estado general del sistema auditado?. Síntesis evaluativa sobre el estado de control y gestión de los sistemas de información auditados. Indicar si los controles existentes son adecuados, eficaces y cumplen con la normativa aplicable.
 
+La auditoría reveló deficiencias significativas en la seguridad y gestión de la infraestructura automatizada de WordPress. La exposición de credenciales y la falta de separación de ambientes son riesgos críticos que deben abordarse con urgencia. Las recomendaciones propuestas fortalecerán el control, la trazabilidad y la estabilidad de los despliegues.
+
+---
 
 ## 11. PLAN DE ACCIÓN Y SEGUIMIENTO
 
-Propuesta de plan de acción acordado con la entidad auditada:
+| Hallazgo                        | Recomendación                                    | Responsable             | Fecha Comprometida |
+|---------------------------------|--------------------------------------------------|-------------------------|--------------------|
+| Credenciales sin cifrado (D)    | Implementar Vault/encrypted_data_bag             | DevOps Team             | 10/07/2025         |
+| Puertos sin restricciones (C)   | Restringir forwarding a IPs autorizadas          | Infraestructura TI      | 08/07/2025         |
+| Versiones desactualizadas (E)   | Actualizar WordPress y cookbooks                 | Equipo de Desarrollo    | 15/07/2025         |
+| Falta de registros (F)          | Configurar sistema de logs centralizado          | Seguridad TI            | 12/07/2025         |
+| Sin segregación de ambientes (G)| Crear entornos separados para dev/test/prod      | Arquitectura de Sistemas| 20/07/2025         |
 
-| Hallazgo | Recomendación | Responsable | Fecha Comprometida |
-|----------|----------------|-------------|---------------------|
-| [N°]     | [Texto]         | [Área o persona] | [dd/mm/aaaa]     |
-
-
+---
 
 ## 12. ANEXOS
 
-Incluir documentos de respaldo como:
+- **Anexo A:** Captura de `vagrant status`  
+  ![Anexo A](anexos/1.png)
 
-- Cuestionarios aplicados  
-- Capturas de pantalla  
-- Registros de logs  
-- Políticas internas revisadas  
-- Cualquier otro elemento que sustente los hallazgos
+- **Anexo B:** Pantalla de WordPress en `http://localhost:8080`  
+  ![Anexo B](anexos/2.png)
 
+- **Anexo C:** Puertos expuestos y configuración de red  
+  ![Anexo C1](anexos/3.png)  
+  ![Anexo C2](anexos/4.png)
+
+- **Anexo D:** Credenciales en texto plano (`attributes/default.rb`)  
+  ![Anexo D](anexos/5.png)
+
+- **Anexo E:** Versiones en `metadata.rb`  
+  ![Anexo E](anexos/6.png)
+
+- **Anexo F:** Falta de logs en `/var/log/`  
+  ![Anexo F](anexos/7.png)
+
+- **Anexo G:** Ausencia de segregación de ambientes  
+  ![Anexo G](anexos/8.png)

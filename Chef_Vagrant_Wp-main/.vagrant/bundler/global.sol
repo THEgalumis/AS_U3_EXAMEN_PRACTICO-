@@ -1,0 +1,1 @@
+{"dependencies":[["dotenv-deployment",["~> 0.0.2"]],["dotenv",["~> 0.9"]],["vagrant-env",["= 0.0.3"]]],"checksum":"304b89f18c0183318b59edd0cca0e45de2a74a22c938a4dddfed670835511320","vagrant_version":"2.4.7"}

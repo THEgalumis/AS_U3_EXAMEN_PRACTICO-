@@ -173,21 +173,21 @@ La auditoría reveló deficiencias significativas en la seguridad y gestión de 
 - **Anexo A:** Captura de `vagrant status`  
   ![Anexo A](1.png)
 
-- **Anexo B:** Pantalla de WordPress en `http://localhost:8080`  
+- **Anexo B:** Pantalla de WordPress en `http://192.168.56.2/`  
   ![Anexo B](2.png)
 
 - **Anexo C:** Puertos expuestos y configuración de red  
-  ![Anexo C1](anexos/3.png)  
-  ![Anexo C2](anexos/4.png)
+  ![Anexo C1](3.png)  
+  ![Anexo C2](4.png)
 
 - **Anexo D:** Credenciales en texto plano (`attributes/default.rb`)  
-  ![Anexo D](anexos/5.png)
+  ![Anexo D](5.png)
 
 - **Anexo E:** Versiones en `metadata.rb`  
-  ![Anexo E](anexos/6.png)
+  ![Anexo E](6.png)
 
 - **Anexo F:** Falta de logs en `/var/log/`  
-  ![Anexo F](anexos/7.png)
+  ![Anexo F](7.png)
 
 - **Anexo G:** Ausencia de segregación de ambientes  
-  ![Anexo G](anexos/8.png)
+  ![Anexo G](8.png)

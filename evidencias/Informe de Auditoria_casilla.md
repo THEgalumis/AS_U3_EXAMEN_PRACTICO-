@@ -171,10 +171,10 @@ La auditoría reveló deficiencias significativas en la seguridad y gestión de 
 ## 12. ANEXOS
 
 - **Anexo A:** Captura de `vagrant status`  
-  ![Anexo A](anexos/1.png)
+  ![Anexo A](1.png)
 
 - **Anexo B:** Pantalla de WordPress en `http://localhost:8080`  
-  ![Anexo B](anexos/2.png)
+  ![Anexo B](2.png)
 
 - **Anexo C:** Puertos expuestos y configuración de red  
   ![Anexo C1](anexos/3.png)  
